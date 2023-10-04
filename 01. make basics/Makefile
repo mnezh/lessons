@@ -12,8 +12,11 @@ TEXT_FILES := $(wildcard *.txt)
 # list of files to generate - *.sorted for each *.txt
 SORTED_FILES := $(addsuffix .sorted, $(basename $(TEXT_FILES)))
 
+# what to do by default
+.DEFAULT_GOAL := all
+
 ######
-# Section 2 - Targets
+# Section 2 - rules
 # General syntax:
 # target_name: dependency names
 #     shell commands to build target
@@ -26,8 +29,8 @@ SORTED_FILES := $(addsuffix .sorted, $(basename $(TEXT_FILES)))
 # file mydata.sorted DEPENDS on file data1.txt
 # - creates mydata.sorted from sorted data1.txt
 # - recreates mydata.sorted if data1.txt is newer than mydata.sorted
-mydata.sorted: data1.txt
-	sort -o mydata.sorted data1.txt
+mydata1.sorted: data1.txt
+	sort -o mydata1.sorted data1.txt
 
 # Example 2 - pattern target:
 # f- iles *.sorted DEPEND on files *.txt
@@ -38,8 +41,8 @@ mydata.sorted: data1.txt
 	sort -o $@ $<
 
 # Example 3 - file depends on several files
-data.merged: $(SORTED_FILES)
-	cat $(SORTED_FILES) | sort -o data.merged
+data.merged: $(TEXT_FILES)
+	cat $(TEXT_FILES) | sort -o data.merged
 
 # Example 4 - "phony" target:
 # - sort all data files if needed
@@ -59,8 +62,3 @@ all: $(SORTED_FILES) data.merged
 .PHONY:
 clean:
 	rm -rf *.sorted *.merged
-
-# Example 7 - default target:
-# What to do if no target name is specified?
-# We want to do it all
-default: all
