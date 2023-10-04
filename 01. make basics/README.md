@@ -138,6 +138,32 @@ clean:
 
 Let's run:
 ```shell
-$make clean
+$ make clean
 rm -rf *.sorted *.merged
+```
+
+### The result
+```make
+.DEFAULT_GOAL := all
+TEXT_FILES := $(wildcard *.txt)
+SORTED_FILES := $(addsuffix .sorted, $(basename $(TEXT_FILES)))
+
+mydata1.sorted: data1.txt
+	sort -o mydata1.sorted data1.txt
+
+%.sorted: %.txt
+	sort -o $@ $<
+
+.PHONY: sort
+sort: $(SORTED_FILES)
+
+data.merged: $(TEXT_FILES)
+	cat $(TEXT_FILES) | sort -o data.merged
+
+.PHONY:
+all: $(SORTED_FILES) data.merged
+
+.PHONY:
+clean:
+	rm -rf *.sorted *.merged
 ```
